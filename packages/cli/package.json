@@ -1,10 +1,19 @@
 {
-  "name": "cli",
+  "name": "@polaris/cli",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "polaris": "./dist/polaris.mjs"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "unbuild --clean",
+    "dev": "unbuild --stub --watch",
+    "prepublishOnly": "npm run build",
+    "postinstall": "node scripts/postinstall.js"
   },
   "keywords": [],
   "author": "",
@@ -14,9 +23,11 @@
     "c12": "^2.0.1",
     "citty": "^0.1.6",
     "consola": "^3.2.3",
-    "std-env": "^3.7.0"
+    "std-env": "^3.7.0",
+    "unbuild": "^2.0.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.8.7"
   }
 }

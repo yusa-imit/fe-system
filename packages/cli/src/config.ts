@@ -1,8 +1,6 @@
-// packages/cli/src/config.ts
 import { loadConfig as loadConfigFile } from "c12";
 import { consola } from "consola";
 import { PolarisConfig } from "@polaris/core";
-import { process } from "std-env";
 
 export async function loadConfig(): Promise<PolarisConfig> {
   const logger = consola.create({
@@ -16,7 +14,10 @@ export async function loadConfig(): Promise<PolarisConfig> {
       defaults: {
         entry: "./src/index.tsx",
         outDir: "./dist",
-        publicPath: "/",
+        apiDir: "./api",
+        pagesDir: "./pages",
+        publicPath: "",
+        modulesDir: "./modules",
         server: {
           port: 3000,
           host: "localhost",

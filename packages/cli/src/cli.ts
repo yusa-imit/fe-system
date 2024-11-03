@@ -1,9 +1,11 @@
-// packages/cli/src/index.ts
+#!/usr/bin/env node
 import { defineCommand, runMain } from "citty";
 import { consola } from "consola";
 import { loadConfig } from "./config";
 import { process } from "std-env";
 import { PolarisServer, PolarisBuilder } from "@polaris/core";
+import fs from "fs";
+import path from "path";
 
 const dev = defineCommand({
   meta: {
@@ -21,6 +23,11 @@ const dev = defineCommand({
       description: "Host address",
       default: "localhost",
     },
+    watch: {
+      type: "boolean",
+      description: "Watch mode",
+      default: true,
+    },
   },
   async run({ args }) {
     try {
@@ -31,20 +38,29 @@ const dev = defineCommand({
       logger.start("Starting development server...");
 
       const config = await loadConfig();
+
       // Override config with CLI args
+      config.outDir = "./.polaris";
       config.server = {
         ...config.server,
         port: parseInt(args.port),
         host: args.host,
       };
 
-      const server = new PolarisServer(config);
+      // Set development environment
+      process.env.POLARIS_ENV = "development";
+
+      // Start server (HMR will be handled internally)
+      const server = new PolarisServer({ ...config, watch: args.watch });
       await server.start();
 
-      logger.success(`Server running at http://${args.host}:${args.port}`);
+      logger.success(
+        `Development server running at http://${args.host}:${args.port}`
+      );
     } catch (error) {
       consola.error("Failed to start development server:", error);
-      process.exit(1);
+      console.trace();
+      process.exit?.(1);
     }
   },
 });
@@ -65,6 +81,11 @@ const build = defineCommand({
       description: "Generate source maps",
       default: true,
     },
+    analyze: {
+      type: "boolean",
+      description: "Analyze bundle size",
+      default: false,
+    },
   },
   async run({ args }) {
     try {
@@ -75,22 +96,29 @@ const build = defineCommand({
       logger.start("Building application...");
 
       const config = await loadConfig();
-      // Add build-specific options
-      // config.build = {
-      //   ...config.build,
-      //   minify: args.minify,
-      //   sourcemap: args.sourcemap,
-      // };
+
+      // Set environment
+      process.env.POLARIS_ENV = "production";
 
       const builder = new PolarisBuilder(config);
       const startTime = Date.now();
+
+      logger.info("Building client bundle...");
       await builder.build();
+
       const buildTime = Date.now() - startTime;
 
       logger.success(`Build completed in ${buildTime}ms`);
+      logger.info(`Output directory: ${config.outDir}`);
+
+      // Log build stats
+      logger.info("Build stats:");
+      logger.info(`  Pages: ${builder.getPagesCount()}`);
+      logger.info(`  API Routes: ${builder.getAPIRoutesCount()}`);
+      logger.info(`  Modules: ${builder.getModulesCount()}`);
     } catch (error) {
       consola.error("Build failed:", error);
-      process.exit(1);
+      process.exit?.(1);
     }
   },
 });
@@ -120,7 +148,17 @@ const start = defineCommand({
 
       logger.start("Starting production server...");
 
+      // Check if build exists
+      if (!fs.existsSync(path.join(process.cwd?.() || "", "dist"))) {
+        logger.error("No build found. Please run 'polaris build' first");
+        process.exit?.(1);
+      }
+
       const config = await loadConfig();
+
+      // Set environment
+      process.env.POLARIS_ENV = "production";
+
       config.server = {
         ...config.server,
         port: parseInt(args.port),
@@ -131,11 +169,11 @@ const start = defineCommand({
       await server.start();
 
       logger.success(
-        `Production server running at http://${args.host}:${args.port}`,
+        `Production server running at http://${args.host}:${args.port}`
       );
     } catch (error) {
       consola.error("Failed to start production server:", error);
-      process.exit(1);
+      process.exit?.(1);
     }
   },
 });
@@ -156,6 +194,11 @@ const create = defineCommand({
       description: "Project template",
       default: "default",
     },
+    module: {
+      type: "boolean",
+      description: "Create as a module project",
+      default: false,
+    },
   },
   async run({ args }) {
     try {
@@ -165,17 +208,34 @@ const create = defineCommand({
 
       logger.start(`Creating new project: ${args.name}`);
 
-      // Project creation logic here
-      // ...
+      // Project template structure
+      const template = args.module ? "module" : args.template;
+
+      // Add basic structure
+      const structure = [
+        "pages/",
+        "api/",
+        "modules/",
+        "public/",
+        "components/",
+        "styles/",
+      ];
+
+      // Create project files...
 
       logger.success("Project created successfully!");
-      logger.info("To get started:");
-      logger.info(`  cd ${args.name}`);
-      logger.info("  npm install");
-      logger.info("  npm run dev");
+      logger.info("\nAvailable commands:");
+      logger.info("  npm run dev    - Start development server");
+      logger.info("  npm run build  - Build for production");
+      logger.info("  npm run start  - Start production server");
+
+      if (args.module) {
+        logger.info("\nModule Federation enabled!");
+        logger.info("Check polaris.config.ts for module configuration");
+      }
     } catch (error) {
       consola.error("Failed to create project:", error);
-      process.exit(1);
+      process.exit?.(1);
     }
   },
 });
@@ -183,7 +243,7 @@ const create = defineCommand({
 // Main CLI command
 const main = defineCommand({
   meta: {
-    name: "my-framework",
+    name: "polaris",
     version: "0.0.1",
     description: "Modern React Framework with Module Federation",
   },
@@ -195,5 +255,4 @@ const main = defineCommand({
   },
 });
 
-// Run the CLI
 runMain(main);

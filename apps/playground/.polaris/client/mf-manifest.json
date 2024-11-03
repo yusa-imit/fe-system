@@ -1,0 +1,98 @@
+{
+  "id": "polaris_app",
+  "name": "polaris_app",
+  "metaData": {
+    "name": "polaris_app",
+    "type": "app",
+    "buildInfo": {
+      "buildVersion": "1.0.0",
+      "buildName": "playground"
+    },
+    "remoteEntry": {
+      "name": "remoteEntry.js",
+      "path": "",
+      "type": "global"
+    },
+    "types": {
+      "path": "",
+      "name": "",
+      "zip": "@mf-types.zip",
+      "api": "@mf-types.d.ts"
+    },
+    "globalName": "polaris_app",
+    "pluginVersion": "0.6.15",
+    "publicPath": "",
+    "prefetchInterface": false
+  },
+  "shared": [
+    {
+      "id": "polaris_app:react-dom",
+      "name": "react-dom",
+      "version": "18.3.1",
+      "singleton": true,
+      "requiredVersion": "^18.3.1",
+      "assets": {
+        "js": {
+          "async": [
+            "__federation_expose_anyModule.4601572d579db91a8ee8.js"
+          ],
+          "sync": [
+            "vendors.c6d3a8f68627b22f0cb5.js",
+            "runtime.f62647e34a7dea2fd3e3.js",
+            "index.da378bc5b4774b2b4c87.js",
+            "entry-client.5d98ebbf4c90fbaf82da.js"
+          ]
+        },
+        "css": {
+          "async": [],
+          "sync": []
+        }
+      }
+    },
+    {
+      "id": "polaris_app:react",
+      "name": "react",
+      "version": "18.3.1",
+      "singleton": true,
+      "requiredVersion": "^18.3.1",
+      "assets": {
+        "js": {
+          "async": [
+            "__federation_expose_anyModule.4601572d579db91a8ee8.js"
+          ],
+          "sync": [
+            "vendors.c6d3a8f68627b22f0cb5.js",
+            "runtime.f62647e34a7dea2fd3e3.js",
+            "index.da378bc5b4774b2b4c87.js",
+            "entry-client.5d98ebbf4c90fbaf82da.js"
+          ]
+        },
+        "css": {
+          "async": [],
+          "sync": []
+        }
+      }
+    }
+  ],
+  "remotes": [],
+  "exposes": [
+    {
+      "id": "polaris_app:anyModule",
+      "name": "anyModule",
+      "assets": {
+        "js": {
+          "sync": [
+            "vendors.c6d3a8f68627b22f0cb5.js",
+            "__federation_expose_anyModule.4601572d579db91a8ee8.js"
+          ],
+          "async": []
+        },
+        "css": {
+          "sync": [],
+          "async": []
+        }
+      },
+      "path": "./anyModule"
+    }
+  ]
+}

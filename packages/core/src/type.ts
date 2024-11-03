@@ -12,12 +12,15 @@ export interface PolarisMiddlewareConfig {
 export interface PolarisServerConfig {
   port?: number;
   host?: string;
-  middleware?: PolarisMiddlewareConfig[];
 }
 
 export interface PolarisConfig {
+  name?: string;
   entry: string;
   outDir?: string;
+  pagesDir?: string;
+  modulesDir?: string;
+  apiDir?: string;
   publicPath?: string;
   moduleFederation?: moduleFederationPlugin.ModuleFederationPluginOptions;
   server?: PolarisServerConfig;

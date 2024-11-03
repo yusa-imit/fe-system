@@ -4,8 +4,23 @@
   "type": "module",
   "description": "",
   "main": "src/index.ts",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "unbuild --clean",
+    "dev": "unbuild --stub --watch",
+    "clean": "rimraf dist",
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [],
   "author": "",
@@ -13,22 +28,31 @@
   "dependencies": {
     "@module-federation/enhanced": "^0.6.15",
     "@module-federation/sdk": "^0.6.15",
-    "@types/react": "^18.2.61",
-    "@types/react-dom": "^18.2.19",
+    "@swc/core": "^1.7.42",
+    "@swc/wasm": "^1.7.42",
     "c12": "^2.0.1",
     "citty": "^0.1.6",
     "consola": "^3.2.3",
     "defu": "^6.1.4",
+    "glob": "^11.0.0",
     "h3": "^1.13.0",
+    "node-loader": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
     "std-env": "^3.7.0",
+    "swc-loader": "^0.2.6",
     "typescript": "5.5.4",
-    "webpack": "^5.96.1"
+    "unbuild": "^2.0.0",
+    "webpack": "^5.96.1",
+    "webpack-dev-middleware": "^7.4.2",
+    "webpack-hot-middleware": "^2.26.1"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
     "@types/node": "^20.16.5",
-    "@repo/typescript-config": "workspace:*"
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "@types/webpack-hot-middleware": "^2.25.9"
   }
 }
